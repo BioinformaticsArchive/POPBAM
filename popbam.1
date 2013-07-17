@@ -1,0 +1,551 @@
+.TH popbam 1 "July 03 2013" "popbam-0.3" "Bioinformatics tools"
+.SH NAME
+.PP
+popbam - Tools for evolutionary analysis of BAM files
+
+.SH SYNOPSIS
+.PP
+popbam snp -f ref.fasta aln.sorted.bam chrX:1000000-2000000
+
+.SH DESCRIPTION
+.PP
+Popbam is a program to perform a suite of evolutionary-based analyses of SAM/BAM 
+files which contain reads from multiple samples. Popbam requires the inclusion 
+of the `PO' tag in the read group header line, which identifies the population 
+from which a particular sample originates.  Once the `PO' tag is included, popbam 
+can do statistical analyses of nucleotide variation both within and between populations.
+
+.SH POPBAM COMMANDS AND OPTIONS
+
+.P 
+There are several command line options that control the base and alignment quality filtering. 
+These option switches are common to all of the popbam functions and can be applied in every case.
+It is mandatory that the user include the name and path of the fasta file that was used as 
+the reference template in the assembly of the BAM file.
+The options are:
+
+.P
+.BR popbam \ [command]
+.RB [ \-i ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+
+.RS
+.B Global options
+.TP 10
+.B -i
+Quality scores are in Illumina 1.3+ format [default: Sanger]
+.TP 10
+.BR -h \ FILE
+Optional input header file [ default: read header from input BAM file ]
+.TP 10
+.BR -f \ FILE
+The fastA reference file for the BAM assembly
+.TP 10
+.BR -m \ INT
+Minimum number of reads covering individual postions per sample [default: 3]
+.TP 10
+.BR -x \ INT
+Maximum number of reads covering individual postions per sample [default: 255]
+.TP 10
+.BR -q \ INT
+Minimum root mean square mapping quality for an alignment to be used [default: 25]
+.TP 10
+.BR -s \ INT
+Minimum SNP quality for a site to be considered variable [default: 25]
+.TP 10
+.BR -a \ INT
+Minimum mapping quality to include a read in the pileup [default: 13]
+.TP 10
+.BR -b \ INT
+Minimum base quality to include a read in the pileup [default: 13]
+.RE
+
+.P 
+The popbam program consists of a suite of seven functions to perform various 
+evolutionary-based analyses of next-generation sequence data from BAM files.
+
+.PP
+
+.TP
+.B snp
+.B popbam snp
+.RB [ \-iv ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-z 
+.IR hetPrior ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-p 
+.IR outgroup ]
+.RB [ \-o 
+.IR format ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Output consensus base calls for each sample in the BAM file. If no region
+is specified, all sites will be analyzed, however if the user asks for
+sliding window mode, a region must be specified.  The format for the 
+region designation can be: `chrX' (the entirety of chrX), `chrX:1000000' 
+(region starting from position 1,000,000) or `chr2:1000000-2000000' (region 
+between positions 1,000,000 and 2,000,000 bp including the end points).
+
+.RS
+.B snp options
+.TP 10
+.B -v
+Output variable sites only [default: All sites]
+.TP 10
+.BR -z \ FLT
+Call heterozygous sites with prior probability [default: Consensus base]
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [default: 1]
+.TP 10
+.BR -p \ STR
+Name of the sample to use as the outgroup [default: reference]
+.TP 10
+.BR -o \ INT
+Output format for SNP function [default: 0]
+.PD 0
+.IP
+0: popbam snp format
+.IP
+1: SweepFinder snp format
+.IP
+2: MS format
+.PD
+.RE
+
+.IP
+The -w option is intended to be used with the ms output option. In that case, each window is
+treated as a separate sample in a typical ms run. The -w option has no effect when invoked in
+the other two output modes. Likewise, the -v option is only available when the output mode is
+set to popbam native snp format, this allow users to count the number of aligned sites. The -h
+option is used to call heterozygous sites and this only works when the output is in native
+popbam format, otherwise the consensus base is used. The -p options allows users to specify
+the outgroup sample to use, by default the reference is assumed to be the outgroup. The name of
+the outgroup sample must match the `SM' field value in the `RG' header in the input BAM file. 
+Specification of the outgroup sequence is used to polarize ancestral and derived states of 
+polymorphic sites, and thus its effects can only be seen when output is in SweepFinder or ms format.
+
+.PP
+
+.TP
+.B haplo
+.B popbam haplo
+.RB [ \-i ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-k
+.IR minSites ]
+.RB [ \-o 
+.IR format ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Calculates haplotype-based statistics including the number of haplotypes in a window, 
+a modified version of the extended haplotype homozygosity statistic (Sabeti et al. 2002) in 
+a window of specified size, or the Gmin statistic (Geneva et al 2013).
+
+.RS
+.B haplo options
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [default: 1]
+.TP 10
+.BR -k \ INT
+Minimum number of aligned sites to consider a window for the divergence calculation [default: 10]
+.TP 10
+.BR -o \ INT
+Analysis to output [default: 0]
+.PD 0
+.IP
+0: number of haplotypes in a window
+.IP
+1: Modified EHH statistic
+.IP
+2: Gmin statistic
+.PD
+.RE
+
+.PP
+
+.TP
+.B diverge
+.B popbam diverge
+.RB [ \-i ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-d 
+.IR dist ]
+.RB [ \-o
+.IR format ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-k
+.IR minSites ]
+.RB [ \-n 
+.IR minSample ]
+.RB [ \-p
+.IR outgroup ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Calculates either the proportion of aligned sites that differ between each individual genome 
+and the reference sequence, or the Jukes-Cantor distance (Jukes and Cantor 1969). Also outputs
+the mean divergence per population, or the number of substitutions with the outgroup and the
+number of segregating sites per population, both of which can be used in the HKA test.
+
+.RS
+.B diverge options
+.TP 10
+.BR -d \ STR
+Distance: pdist (p-distance) or jc (Jukes-Cantor) [default: pdist]
+.TP 10
+.BR -p \ STR
+Name of the sample to use as the outgroup [default: reference]
+.TP 10
+.BR -o \ INT
+Analysis to output [default: 0]
+.PD 0
+.IP
+0: individual sample divergence
+.IP
+1: population divergence statistics
+.PD
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [default: 1]
+.TP 10
+.BR -k \ INT
+Minimum number of aligned sites to consider a window for the divergence calculation [default: 10]
+.TP 10
+.BR -n \ INT
+Set the minimum number of individuals in the sample to calculate divergence [default: all samples present]
+.RE
+
+.PP
+
+.TP
+.B tree
+.B popbam tree
+.RB [ \-i ]
+.RB [ \-h 
+.IR head.txt ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-d 
+.IR dist ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Output neighbor-joining (NJ) trees (Saitou and Nei 1987) in newick format of all samples in the BAM file.
+
+.RS
+.B tree options
+.TP 10
+.BR -d \ STR
+Distance: pdist (p-distance) or jc (Jukes-Cantor) [default: pdist]
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [default: 1]
+.RE
+
+.PP
+
+.TP
+.B nucdiv
+.B popbam nucdiv
+.RB [ \-i ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-n 
+.IR minSample ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-k
+.IR minSites ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Computes nucleotide diversity both within (pi) and between populations (Dxy) (Nei and Li 1979).
+
+.RS
+.B nucdiv options
+.TP 10
+.BR -n \ INT
+Set the minimum number of individuals in the sample to calculate pi [default: all samples present]
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [1]
+.TP 10
+.BR -k \ INT
+Minimum number of aligned sites to consider a window in calculation of pi and dxy [default: 10]
+.RE
+
+.PP
+
+.TP
+.B ld
+.B popbam ld
+.RB [ \-ie ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-o 
+.IR analysis ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-k
+.IR minSites ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-n
+.IR min SNPs ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Computes measures of linkage disequilibrium within all populations.  By default, popbam
+will output Kelly's ZnS statistic (Kelly 1997), which is just the average r2 across all 
+variable sites. Other options include the omega max statistic of Kim and Nielsen (2004) within windows
+.RI " and Wall's " B " and " Q " statistics (Wall 1999), which are based on the distribution of sites that are congruent."
+It is optional whether singleton derived sites should be considered in the calculation of 
+linkage disequilibrium statistics.  However, if singleton sites are excluded, this will be
+reflected in the number of variable sites reported by popbam in the final output.
+
+.RS
+.B ld options
+.TP 10
+.B -e
+Exclude singleton derived mutations in ld calculations [default: Include singletons]
+.TP 10
+.BR -o \ INT
+Analysis to perform [default: 0] 
+.PD 0
+.IP 
+0: Kelly's ZnS statistic
+.IP 
+1: Omega_max ld statistic
+.IP 
+.RI "0: Wall's " B " and " Q " congruency statistics"
+.PD
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [default: 1]
+.TP 10
+.BR -k \ INT
+Minimum number of aligned sites to consider a window [default: 10]
+.TP 10
+.BR -n \ INT
+Mimimum number of snps in a window to do LD analysis [ default: 10 ]
+.RE
+
+.IP
+.RB The \ ld " function will output the chromosome, beginning and ending reference genome coordinate, and "
+.RB "the number of variables sites in a given window.  By default, the " ld " function will then output"
+Kelly's ZnS statistic for each population in the order that they appear in the BAM header.  Similarly,
+if one of the other output options are selected, then that statistic will be output for each population
+in the same order as above.
+
+.PP
+
+.TP
+.B sfs
+.B popbam sfs
+.RB [ \-i ]
+.RB [ \-h
+.IR head.txt ]
+.RB [ \-w 
+.IR winSize ]
+.RB [ \-p
+.IR outgroup ]
+.RB [ \-f
+.IR in.fa ]
+.RB [ \-m
+.IR minCov ]
+.RB [ \-x
+.IR maxCov ]
+.RB [ \-q
+.IR minRmsQ ]
+.RB [ \-s
+.IR minSnpQ ]
+.RB [ \-a
+.IR minMapQ ]
+.RB [ \-b
+.IR minBaseQ ]
+.I in.bam
+.RI [ region
+.RI [ ... ]]
+
+Computes summaries of the site frequency spectrum of mutations within populations.
+.RI "Both Tajima's " D " (Tajima 1989) and the standardized version of Fay and Wu's " H " (Zeng et al. 2006) are calculated."
+
+.RS
+.B sfs options
+.TP 10
+.BR -w \ INT
+Use sliding window of given size (kb) [default: 1]
+.TP 10
+.BR -p \ STR
+Name of the sample to use as the outgroup [default: reference]
+.RE
+
+.IP
+The -p options allows users to specify the outgroup sample to use, by default the reference 
+is assumed to be the outgroup. The name of the outgroup sample must match the `SM' field value 
+in the `RG' header in the input BAM file. Specification of the outgroup sequence is used to 
+polarize ancestral and derived states of polymorphic sites, for the calculation of Fay and
+.RI "Wu's standardized " H " statistic."
+
+.SH LIMITATIONS
+.PP
+.IP \(bu 2
+Popbam is currently limited to representing polymorphism data from 64 individual samples,
+hence the number of populations is also limited to 64, but the number of read groups
+is unlimited.
+.IP \(bu 2
+Popbam does not consider sites with indels.
+.IP \(bu 2 
+Popbam does not phase unphased diploid sequences.
+
+.SH CITATIONS
+.PP
+Geneva AJ, Muirhead CA, Lovato LM, Kingan SB, and Garrigan D (2013). A simple statistic to detect
+recent gene flow from whole-genome data. Genetics: in preparation.
+
+Jukes TH and Cantor CR (1969). Evolution of protein molecules. In: Mammalian Protein Metabolism, III
+(Munro HN, ed.), pp. 21-132.
+
+Kelly JK (1997). A test of neutrality based on interlocus associations. Genetics 146: 1197-1206.
+
+Kim Y and Nielsen R (2004). Linkage disequilibrium as a signature of selective sweeps. Genetics 167: 1513-1524.
+
+Nei M and Li W-H (1979). Mathematical model for studing genetic variation in terms of restriction
+endonucleases. Proc Natl Acad Sci USA 76: 5269-5273.
+
+Sabeti PC, Reich DE, Higgins JM, et al (2002). Detecting recent positive selection in the human 
+genome from haplotype strucutre. Nature 419: 832-837.
+
+Saitou N and Nei M (1987). The neighbor-joining method: a new method for reconstructing phylogenetic
+trees. Mol Biol Evol 4: 406-425.
+
+Tajima F (1989). Statistical method for testing the neutral mutation hypothesis by DNA polymorphism.
+Genetics 123: 585-595.
+
+Wall JD (1999). Recombination and the power of statistical tests of neutrality. Genet Res 74: 65-79.
+
+Zeng K, Fu Y-X, Shi S, and Wu C-I (2006). Statistical tests for detecting positive selection by
+utilizing high-frequency variants. Genetics 174: 1431-1439.
+
+.SH AUTHOR
+.PP
+Dan Garrigan, University of Rochester, dgarriga at bio dot rochester dot edu
+
+.SH SEE ALSO
+.PP
+Popbam website: <http://sourceforge.net/projects/popbam>
