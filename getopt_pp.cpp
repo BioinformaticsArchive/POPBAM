@@ -4,9 +4,9 @@ GetOpt_pp: Yet another C++ version of getopt.
 
     Copyright (C) Daniel Gutson, FuDePAN 2007-2010
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     GetOpt_pp IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -226,34 +226,34 @@ GETOPT_INLINE GetOpt_pp& GetOpt_pp::operator >> (const _Option& opt) throw(GetOp
 
         switch (_last)
         {
-            case _Option::OK:
-                break;
+        case _Option::OK:
+            break;
 
-            case _Option::OptionNotFound:
-                if (_exc & std::ios_base::eofbit)
-                    throw OptionNotFoundEx();
-                break;
+        case _Option::OptionNotFound:
+            if (_exc & std::ios_base::eofbit)
+                throw OptionNotFoundEx();
+            break;
 
-            case _Option::BadType:
-                if (_exc & std::ios_base::failbit)
-                    throw InvalidFormatEx();
-                break;
+        case _Option::BadType:
+            if (_exc & std::ios_base::failbit)
+                throw InvalidFormatEx();
+            break;
 
-            case _Option::NoArgs:
-                if (_exc & std::ios_base::eofbit)
-                    throw ArgumentNotFoundEx();
-                break;
+        case _Option::NoArgs:
+            if (_exc & std::ios_base::eofbit)
+                throw ArgumentNotFoundEx();
+            break;
 
-            case _Option::TooManyArgs:
-                if (_exc & std::ios_base::failbit)
-                    throw TooManyArgumentsEx();
-                break;
+        case _Option::TooManyArgs:
+            if (_exc & std::ios_base::failbit)
+                throw TooManyArgumentsEx();
+            break;
 
-            case _Option::OptionNotFound_NoEx:
-                break;  // Ok, it will be read by casting to bool
+        case _Option::OptionNotFound_NoEx:
+            break;  // Ok, it will be read by casting to bool
 
-            case _Option::ParsingError:
-                break;  // just to disable warning
+        case _Option::ParsingError:
+            break;  // just to disable warning
         }
     }
     else if (_exc & std::ios_base::failbit)
