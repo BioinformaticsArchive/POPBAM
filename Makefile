@@ -48,9 +48,6 @@ $(PROG): $(OBJS)
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-.cpp.o: pop_svnversion.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ 
-
 .PHONY: install
 install: $(PROG)
 	install -m 755 $(PROG) $(INSTALL_DIR)
