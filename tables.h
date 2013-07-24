@@ -22,4 +22,4 @@ extern const char iupac[16];
 /*! \def iupac[16]
  *  \brief A reverse lookup table for IUPAC codes
  */
-unsigned char iupac_rev[256];
+extern unsigned char iupac_rev[256];
