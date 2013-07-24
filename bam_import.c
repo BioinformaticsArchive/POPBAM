@@ -7,6 +7,7 @@
 #ifdef _WIN32
 #include <fcntl.h>
 #endif
+#include "tables.h"
 #include "kstring.h"
 #include "bam.h"
 #include "sam_header.h"
@@ -45,25 +46,6 @@ unsigned short bam_char2flag_table[256] = {
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
-};
-
-unsigned char bam_nt16_table[256] = {
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	 1, 2, 4, 8, 15,15,15,15, 15,15,15,15, 15, 0 /*=*/,15,15,
-	15, 1,14, 2, 13,15,15, 4, 11,15,15,12, 15, 3,15,15,
-	15,15, 5, 6,  8,15, 7, 9, 15,10,15,15, 15,15,15,15,
-	15, 1,14, 2, 13,15,15, 4, 11,15,15,12, 15, 3,15,15,
-	15,15, 5, 6,  8,15, 7, 9, 15,10,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15
 };
 
 struct __tamFile_t {
@@ -203,11 +185,11 @@ static inline void append_text(bam_header_t *header, kstring_t *str)
 	size_t x = header->l_text, y = header->l_text + str->l + 2; // 2 = 1 byte dret + 1 byte null
 	kroundup32(x);
 	kroundup32(y);
-	if (x < y) 
+	if (x < y)
     {
         header->n_text = y;
         header->text = (char*)realloc(header->text, y);
-        if (!header->text) 
+        if (!header->text)
         {
             fprintf(stderr,"realloc failed to alloc %ld bytes\n", y);
             abort();
@@ -492,7 +474,7 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 	}
 	doff0 = doff;
 	if ((dret != '\n') && (dret != '\r'))
-	{ 
+	{
 		// aux
 		while (ks_getuntil(ks, KS_SEP_TAB, str, &dret) >= 0)
 		{

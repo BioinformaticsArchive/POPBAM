@@ -5,6 +5,7 @@
 */
 
 #include "pop_nucdiv.h"
+#include "tables.h"
 
 int main_nucdiv(int argc, char *argv[])
 {

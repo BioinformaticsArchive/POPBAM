@@ -4,6 +4,7 @@
  *  \version 0.3
 */
 #include "pop_snp.h"
+#include "tables.h"
 
 int main_snp(int argc, char *argv[])
 {

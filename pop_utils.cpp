@@ -24,6 +24,7 @@
  *
 **/
 #include "popbam.h"
+#include "tables.h"
 #include "ksort.h"
 #include "khash.h"
 #include "gamma.h"
@@ -163,8 +164,8 @@ int segbase(int num_samples, unsigned long long *cb, char ref, int min_snpq)
 		// if SNP quality is low, revert both alleles to the reference allele
 		else if ((allele1 == allele2) && (iupac[genotype] != ref) && (snp_quality < min_snpq))
 		{
-			cb[i] -= (genotype-iupac_rev[ref])<<CHAR_BIT;
-			cb[i] -= (genotype-iupac_rev[ref])<<(CHAR_BIT+2);
+			cb[i] -= (genotype-iupac_rev[(int)ref])<<CHAR_BIT;
+			cb[i] -= (genotype-iupac_rev[(int)ref])<<(CHAR_BIT+2);
 		}
 		else
 			continue;
@@ -230,13 +231,13 @@ static errmod_coef_t *cal_coef(double depcorr, double eta)
 	errmod_coef_t *ec;
 
 	ec = (errmod_coef_t*)calloc(1, sizeof(errmod_coef_t));
-	
+
 	// initialize ->fk
 	ec->fk = (double*)calloc(256, sizeof(double));
 	ec->fk[0] = 1.0;
 	for (n=1; n != 256; ++n)
 		ec->fk[n] = pow(1.0-depcorr, n)*(1.0-eta)+eta;
-	
+
 	// initialize ->coef
 	ec->beta = (double*)calloc(256*256*64, sizeof(double));
 	lC = (double*)calloc(256*256, sizeof(double));

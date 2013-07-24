@@ -172,7 +172,7 @@ typedef struct __bam_sample_t
 typedef struct __errmod_coef_t
 {
 	double *fk;                       //!< Pointer to
-	double *beta;                     //!< Pointer to 
+	double *beta;                     //!< Pointer to
 	double *lhet;                     //!< Pointer to
 } errmod_coef_t;
 
@@ -193,7 +193,7 @@ typedef struct __errmod_t
 typedef struct __call_aux_t
 {
 	double fsum[16];                  //!< Array of
-	double bsum[16];                  //!< Array of 
+	double bsum[16];                  //!< Array of
 	unsigned int c[16];               //!< Array of
 } call_aux_t;
 
@@ -205,33 +205,6 @@ typedef struct __call_aux_t
  *  \brief A enum data type that holds the popbam function identifier
  */
 enum popbam_func_t {SNP, DIVERGE, HAPLO, TREE, NUCDIV, LD, SFS};
-
-/*! \def bam_nt16_table[256]
- *  \brief A lookup table
- */
-static unsigned char bam_nt16_table[256] = {
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	 1, 2, 4, 8, 15,15,15,15, 15,15,15,15, 15, 0,15,15,
-	15, 1,14, 2, 13,15,15, 4, 11,15,15,12, 15, 3,15,15,
-	15,15, 5, 6,  8,15, 7, 9, 15,10,15,15, 15,15,15,15,
-	15, 1,14, 2, 13,15,15, 4, 11,15,15,12, 15, 3,15,15,
-	15,15, 5, 6,  8,15, 7, 9, 15,10,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
-	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15
-};
-
-/*! \def iupac[16]
- *  \brief A lookup table for IUPAC codes
- */
-const char iupac[16] = {'A','M','R','W','N','C','S','Y','N','N','G','K','N','N','N','T'};
 
 ///
 /// Define classes

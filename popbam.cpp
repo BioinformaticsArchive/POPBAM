@@ -4,8 +4,30 @@
  *  \version 0.3
 */
 #include "popbam.h"
+#include "tables.h"
 
 int bam_nt16_nt4_table[16] = { 4, 0, 1, 4, 2, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4 };
+
+const char iupac[16] = {'A','M','R','W','N','C','S','Y','N','N','G','K','N','N','N','T'};
+
+unsigned char bam_nt16_table[256] = {
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	 1, 2, 4, 8, 15,15,15,15, 15,15,15,15, 15, 0,15,15,
+	15, 1,14, 2, 13,15,15, 4, 11,15,15,12, 15, 3,15,15,
+	15,15, 5, 6,  8,15, 7, 9, 15,10,15,15, 15,15,15,15,
+	15, 1,14, 2, 13,15,15, 4, 11,15,15,12, 15, 3,15,15,
+	15,15, 5, 6,  8,15, 7, 9, 15,10,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15,
+	15,15,15,15, 15,15,15,15, 15,15,15,15, 15,15,15,15
+};
 
 int main(int argc, char *argv[])
 {
@@ -110,10 +132,10 @@ void popbamData::assign_pops(void)
 	{
 		if (sm->smpl[i])
 			si = bam_smpl_sm2popid(sm, bamfile.c_str(), sm->smpl[i], &buf);
-		
+
 		if (si < 0)
 			si = bam_smpl_sm2popid(sm, bamfile.c_str(), 0, &buf);
-		
+
 		if (si < 0)
 		{
 			std::string msg;
@@ -179,7 +201,7 @@ void popbamData::call_base(int n, const bam_pileup1_t *pl, unsigned long long *c
 		if ((pl+i)->is_del || (pl+i)->is_refskip || ((pl+i)->b->core.flag & BAM_FUNMAP))
 			continue;
 		s = bam_aux_get((pl+i)->b, "RG");
-		
+
 		// skip reads with no read group tag
 		if (!s)
 			continue;
@@ -187,7 +209,7 @@ void popbamData::call_base(int n, const bam_pileup1_t *pl, unsigned long long *c
 			si = bam_smpl_rg2smid(sm, bamfile.c_str(), (char*)(s+1), &buf);
 		if (si < 0)
 			si = bam_smpl_rg2smid(sm, bamfile.c_str(), 0, &buf);
-		
+
 		if (si < 0)
 		{
 			free(buf.s);
@@ -195,7 +217,7 @@ void popbamData::call_base(int n, const bam_pileup1_t *pl, unsigned long long *c
 			msg = "Problem assigning read group " + rogue_rg + " to a sample.\nPlease check BAM header for correct SM and PO tags";
 			fatal_error(msg, __FILE__, __LINE__, 0);
 		}
-		
+
 		if (depth[si] < max_depth)
 		{
 			p[si][depth[si]] = const_cast<bam_pileup1_t*>(pl+i);
@@ -274,7 +296,7 @@ int popbam_usage(void)
 	std::cerr << std::endl;
 	std::cerr << "Program: popbam " << std::endl;
 	std::cerr << "(Tools to perform evolutionary analysis from BAM files)" << std::endl;
-	std::cerr << "Version: " << POPBAM_RELEASE << "  (Revision: " << svn_version() << ")" << std::endl << std::endl;
+	std::cerr << "Version: " << POPBAM_RELEASE << std::endl; //"  (Revision: " << svn_version() << ")" << std::endl << std::endl;
 	std::cerr << "Usage: popbam <command> [options] <in.bam> [region]"  << std::endl << std::endl;
 	std::cerr << "Commands:  snp       output consensus base calls" << std::endl;
 	std::cerr << "           haplo     output haplotype-based analyses" << std::endl;

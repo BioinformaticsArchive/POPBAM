@@ -5,6 +5,7 @@
 */
 
 #include "pop_tree.h"
+#include "tables.h"
 
 int main_tree(int argc, char *argv[])
 {
@@ -161,7 +162,7 @@ int make_tree(unsigned int tid, unsigned int pos, int n, const bam_pileup1_t *pl
 		// call bases
 		t->call_base(n, pl, cb);
 
-		// resolve heterozygous sites		
+		// resolve heterozygous sites
 		if (!(t->flag & BAM_HETEROZYGOTE))
 			clean_heterozygotes(t->sm->n, cb, (int)t->ref_base[pos], t->min_snpQ);
 

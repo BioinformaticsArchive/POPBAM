@@ -4,6 +4,7 @@
  *  \version 0.3
 */
 #include "pop_ld.h"
+#include "tables.h"
 
 int main_ld(int argc, char *argv[])
 {
@@ -498,7 +499,7 @@ std::string ldData::parseCommandLine(int argc, char *argv[])
 	// check if output option is valid
 	if ((output < 0) || (output > 2))
 	{
-		msg = "Not a valid output option"; 
+		msg = "Not a valid output option";
 		fatal_error(msg, __FILE__, __LINE__, &ldUsage);
 	}
 
