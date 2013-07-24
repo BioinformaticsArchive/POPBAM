@@ -20,19 +20,23 @@ PROG=              popbam
 LIBFLAGS=          -lz -lm
 INSTALL_DIR=       /usr/local/bin
 
-all:  CXXFLAGS +=  $(C_RELEASE_FLAGS)
+all: CXXFLAGS +=  $(C_RELEASE_FLAGS)
+all: CFLAGS += $(C_RELEASE_FLAGS)
 all: $(PROG)
 
 .PHONY: debug
 debug: CXXFLAGS += $(C_DEBUG_FLAGS)
+debug: CFLAGS += $(C_DEBUG_FLAGS)
 debug: $(PROG)
 
 .PHONY: release
 release: CXXFLAGS += $(C_RELEASE_FLAGS)
+release: CFLAGS += $(C_RELEASE_FLAGS)
 release: $(PROG)
 
 .PHONY: profile
 profile: CXXFLAGS += $(C_PROFILE_FLAGS)
+profile: CFLAGS += $(C_PROFILE_FLAGS)
 profile: $(PROG)
 
 $(PROG): $(OBJS)
