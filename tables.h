@@ -3,7 +3,9 @@
  *  \author Daniel Garrigan
  *  \version 0.3
  */
-
+#ifdef __cplusplus 
+extern "C" {
+#endif
 /*! \def bam_nt16_table[256]
  *  \brief A lookup table
  */
@@ -23,3 +25,6 @@ extern const char iupac[16];
  *  \brief A reverse lookup table for IUPAC codes
  */
 extern const unsigned char iupac_rev[256];
+#ifdef __cplusplus
+}
+#endif

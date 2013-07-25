@@ -285,27 +285,27 @@ extern int main_sfs(int, char**);
 #ifdef _MSC_VER
 static inline unsigned int log2int(const unsigned int val)
 {
-    unsigned int ret;
+    unsigned int re;
 
     __asm
     {
         bsr eax, val
-        mov ret, eax
+        mov re, eax
     }
 
-    return ret;
+    return re;
 }
 #else
 extern __inline unsigned int log2int(const unsigned int val)
 {
-    unsigned int ret;
+    unsigned int re;
 
     asm ( "\tbsr  %1, %0\n"
-      : "=r" (ret)
+      : "=r" (re)
               : "r"  (val)
             );
 
-    return ret;
+    return re;
 }
 #endif
 
