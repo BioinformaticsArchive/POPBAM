@@ -176,7 +176,7 @@ int make_haplo(unsigned int tid, unsigned int pos, int n, const bam_pileup1_t *p
             if (fq > 0)
             {
                 t->hap.pos[t->segsites] = pos;
-                t->hap.ref[t->segsites] = (unsigned char)bam_nt16_table[(int)t->ref_base[pos]];
+                t->hap.ref[t->segsites] = bam_nt16_table[(int)t->ref_base[pos]];
                 for (i=0; i < t->sm->n; i++)
                 {
                     t->hap.rms[i][t->segsites] = (cb[i]>>(CHAR_BIT*6))&0xffff;

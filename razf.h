@@ -82,10 +82,10 @@ typedef struct RandomAccessZFile  {
 	int file_type;
 	/* plain file or rz file, razf_read support plain file as input too, in this case, razf_read work as buffered fread */
 #ifdef _USE_KNETFILE
-    union {
-        knetFile *fpr;
-        int fpw;
-    } x;
+	union {
+		knetFile *fpr;
+		int fpw;
+	} x;
 #else
 	int filedes; /* the file descriptor */
 #endif
