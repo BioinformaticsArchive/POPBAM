@@ -8,38 +8,36 @@ sliding windows across a genome.
 INTRODUCTION
 ------------
 
-This is the third beta release (0.3) of the POPBAM program.
-The source code has primarily been alpha tested on Debian and
-RedHat based operating systems using the GNU C++ compiler.
-A Makefile is provided for the GNU C++ compiler with three 
-compilation modes: release (default), debug, and profile.
+This is the third beta release (0.3) of the POPBAM program. The source code has primarily been alpha tested 
+on Debian and Red Hat based operating systems using the GNU C++ compiler. A Makefile is provided for the 
+GNU C++ compiler with three compilation modes: release (default), debug, and profile.
 
 OBTAINING THE SOURCE CODE
 -------------------------
 
-The POPBAM source code is available to download freely from
-SourceForge at
+The POPBAM source code is available to download freely from GitHub at
 
-[http://sourceforge.net/projects/popbam/]
+[http://dgarriga.github.io/POPBAM/]
 
-The source code is a gzipped tar file called
+as either a gzipped tar file or a zipped file with the prefix
 
-	popbam-<version>.tar.gz
+	dgarriga-POPBAM-<version>
 
 where <version> is the current version number of POPBAM.
 
-The only dependency of the POPBAM program is the zlib 
-compression library and headers. Please insure these
-are installed on your system before attempting to compile 
-POPBAM.
+The only dependency of the POPBAM program is the zlib compression library and headers. 
+Please insure these are installed on your system before attempting to compile POPBAM.
 
 COMPILING THE SOURCE CODE
 -------------------------
 
-Once downloaded, you can extract the popbam/ directory using
-the command
+Once downloaded, you can extract the popbam/ directory using the command
 
-	tar -xzf popbam-<version>.tar.gz
+	dgarriga-POPBAM-<version>.tar.gz
+
+or 
+
+	unzip dgarriga-POPBAM-<version>.zip
 
 Move into the POPBAM source code directory by 
 
@@ -49,9 +47,8 @@ Then you can simply type
 
 	make
 
-to build the source code.  If you have administrator privileges, you can
-automatically install the POPBAM executable into the /usr/local/bin 
-directory by typing
+to build the source code.  If you have administrator privileges, you can automatically install 
+the POPBAM executable into the /usr/local/bin directory by typing
 
 	sudo make install
 
@@ -59,12 +56,25 @@ Lastly, you can clean the POPBAM directory by using
 
 	make clean
 
-VIEWING THE MANPAGE
--------------------
+GETTING HELP USING THE PROGRAM
+------------------------------
 
-If one has system administrator privileges, you can install the popbam.1 file
-into a system manpath or, alternatively, the POBPAM manpage can be viewed in
+Currently, the primary resource for helping users run POPBAM is a manpage.
+If one has system administrator privileges, the popbam.1 file can be installed
+into the system manpath or, alternatively, the POBPAM manpage can be viewed in
 the current directory by typing
 
     man ./popbam.1
 
+EXAMPLE DATA SET
+----------------
+
+To test the build of POPBAM, the user may download an example BAM file
+from the web site:
+
+[http://kimura.biology.rochester.edu/data/popbam/trial.bam]
+	
+This BAM files comprises a single read group each from nine lines of *Drosophila melanogaster*
+from sub-Saharan Africa and one line from France. For the outgroup sequence, there is a single
+*Drosophila mauritiana* read group. This example contains only reads that map to the X chromosome
+of the *Drosophila melanogaster* reference genome (build 5.45).
