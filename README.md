@@ -59,3 +59,12 @@ Lastly, you can clean the POPBAM directory by using
 
 	make clean
 
+VIEWING THE MANPAGE
+-------------------
+
+If one has system administrator privileges, you can install the popbam.1 file
+into a system manpath or, alternatively, the POBPAM manpage can be viewed in
+the current directory by typing
+
+    man ./popbam.1
+
